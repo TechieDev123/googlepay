@@ -11,15 +11,17 @@ import jakarta.ws.rs.core.Response;
 public class GooglePayApp {
     public static void main(String[] args) {
         GooglePayApp googlepayApp=new GooglePayApp();
-        //googlepayApp.fetchBalance("4674674","+914874585858");
+        googlepayApp.fetchBalance("4674674","+914874585858","hdfc");
         //googlepayApp.createAccountInPartner(new AccountInfo("Kishore Ojha","SAVINGS","CREATED","HDFC JUBILEE HILLS","+91744544","EPHFBB8763",780000.0f));
-        googlepayApp.updateAccountInPartner(new AccountInfo("Kishore Ojha","SAVINGS","CREATED","HDFC JUBILEE HILLS","++917457657","EPHFBB8763",780000.0f));
+        //googlepayApp.updateAccountInPartner(new AccountInfo("Kishore Ojha","SAVINGS","CREATED","HDFC JUBILEE HILLS","++917457657","EPHFBB8763",780000.0f));
     }
 
-    public void fetchBalance(String accountNo, String mobileNo) {
+    public void fetchBalance(String accountNo, String mobileNo, String bankName) {
         Client client = ClientBuilder.newClient();
-        Response response = client.target("http://localhost:9090/HDFCBank/api/hdfc/accounts")
+        Response response = client.target("http://localhost:9090/upi/bank")
+                .path("/{bank-name}")
                 .path("/{account-no}")
+                .resolveTemplate("bank-name", bankName)
                 .resolveTemplate("account-no", accountNo)
                 .matrixParam("mobile-no",mobileNo)
                 .request()
