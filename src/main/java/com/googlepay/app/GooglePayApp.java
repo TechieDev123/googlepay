@@ -11,13 +11,13 @@ import jakarta.ws.rs.core.Response;
 public class GooglePayApp {
     public static void main(String[] args) {
         GooglePayApp googlepayApp=new GooglePayApp();
-        googlepayApp.fetchBalance("4674674","+914874585858","hdfc");
+        googlepayApp.fetchBalance("0d158f6f-334b-4434-89c2-6b13e99a8866","36563635","hdfc");
         //googlepayApp.createAccountInPartner(new AccountInfo("Kishore Ojha","SAVINGS","CREATED","HDFC JUBILEE HILLS","+91744544","EPHFBB8763",780000.0f));
         //googlepayApp.updateAccountInPartner(new AccountInfo("Kishore Ojha","SAVINGS","CREATED","HDFC JUBILEE HILLS","++917457657","EPHFBB8763",780000.0f));
     }
 
     public void fetchBalance(String accountNo, String mobileNo, String bankName) {
-        Client client = ClientBuilder.newClient();
+        Client client = ClientBuilder.newClient().register(AccountInfoJsonReader.class);
         Response response = client.target("http://localhost:9090/upi/bank")
                 .path("/{bank-name}")
                 .path("/{account-no}")
@@ -25,10 +25,9 @@ public class GooglePayApp {
                 .resolveTemplate("account-no", accountNo)
                 .matrixParam("mobile-no",mobileNo)
                 .request()
-                .header("Cookie","account-holder-name=mahesh")
                 .get();
-        String data= response.readEntity(String.class);
-        System.out.println("Google pay successfully Fetched Amount from your bank :: "+data);
+        AccountInfo data= response.readEntity(AccountInfo.class);
+        System.out.println("Google pay successfully Fetched Amount from your bank :: "+data.toString());
     }
 
     public void createAccountInPartner(AccountInfo accountInfo){
